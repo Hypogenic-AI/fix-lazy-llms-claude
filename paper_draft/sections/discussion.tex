@@ -1,0 +1,65 @@
+\section{Discussion}
+\label{sec:discussion}
+
+Our results reveal that harsh self-critique is a double-edged sword whose effectiveness depends critically on task characteristics. We discuss the underlying mechanism, practical implications, and limitations.
+
+\subsection{Why Opposite Effects?}
+\label{sec:mechanism}
+
+The key insight is that harsh self-critique helps when the model is \emph{likely to be wrong} and hurts when it is \emph{likely to be right}. This can be understood through the lens of type I and type II errors in self-evaluation:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{Type I error}: The critique identifies a problem when none exists (false positive).
+    \item \textbf{Type II error}: The critique fails to identify a real problem (false negative).
+\end{itemize}
+
+Harsh critique prompts shift the model toward lower thresholds for identifying problems, increasing type I errors and decreasing type II errors. On \gsm, where $\sim$90\% of initial answers are correct, type I errors dominate: the harsh critic finds ``problems'' with correct answers. On \truthful, where $\sim$78\% of initial answers are wrong, type II errors dominate in neutral critique; harsh critique reduces these by forcing reconsideration of intuitive but incorrect answers.
+
+This mechanism is distinct from simply ``trying harder.'' The \rudeuser condition---which uses demanding external language---has no effect, suggesting that effort is not the bottleneck. Rather, the effect operates through changing the model's \emph{evaluation threshold} for its own work.
+
+\subsection{Practical Implications}
+\label{sec:implications}
+
+Our findings provide actionable guidance for practitioners:
+
+\para{When to use harsh self-critique.}
+Harsh self-critique is beneficial when:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item The task is known to be difficult for the model
+    \item Initial accuracy is expected to be low
+    \item The model tends to produce confident but wrong answers
+    \item The task involves overcoming common misconceptions or biases
+\end{itemize}
+
+\para{When to avoid harsh self-critique.}
+Harsh self-critique is harmful when:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item The task is relatively easy for the model
+    \item Initial accuracy is expected to be high
+    \item The model typically produces correct answers on first attempt
+    \item Second-guessing correct answers is costly
+\end{itemize}
+
+\para{Calibration matters.}
+The effectiveness of harsh self-critique depends on having accurate expectations about initial accuracy. Without this calibration, practitioners may inadvertently harm performance by applying harsh critique to tasks the model already handles well.
+
+\subsection{Connection to Sycophancy}
+\label{sec:sycophancy}
+
+Our results reveal a phenomenon related to sycophancy~\citep{chen2024yesmen}: models defer not only to user opinions but also to their own harsh self-evaluations. When the harsh critic ``finds'' problems, the model accepts this critique and changes its answer---even when the original answer was correct. This can be viewed as self-induced sycophancy, where the model's deference to criticism extends to its own internal critic.
+
+This suggests that mitigation strategies for sycophancy might also apply to self-critique: teaching models to maintain correct answers in the face of unfounded criticism, whether from users or from themselves.
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+Our study has several limitations that suggest directions for future work:
+
+\para{Single model.} We tested only \gptmini; effects may differ for other models. Larger models may be more calibrated in their self-critique, while smaller models may be more susceptible to harsh self-evaluation.
+
+\para{Sample size.} We used 50 samples per condition. While sufficient to detect the large effects we observed, larger samples would provide more precise estimates and power to detect smaller effects.
+
+\para{Two tasks.} We tested on tasks at opposite ends of the accuracy spectrum. Tasks with intermediate initial accuracy may show more nuanced effects, potentially with an optimal harshness level.
+
+\para{Single critique round.} We performed one round of critique-refine. Multiple rounds might show different dynamics, such as oscillation between answers or convergence to different optima.
+
+\para{No confidence calibration.} We did not have access to model confidence scores. Future work could investigate whether harsh critique is more harmful when the model is confident (and likely correct) versus uncertain.

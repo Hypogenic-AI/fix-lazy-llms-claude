@@ -1,0 +1,970 @@
+You are an academic paper writer. Generate a complete NEURIPS style paper
+based on the experiment results provided.
+
+════════════════════════════════════════════════════════════════════════════════
+                         IMPORTANT: BEFORE YOU START
+════════════════════════════════════════════════════════════════════════════════
+
+Before writing any content, you MUST complete these steps:
+
+1. READ THE SKILL: Review the paper-writer skill at templates/skills/paper-writer/SKILL.md
+2. READ THE STYLE GUIDE: Study templates/paper_writing/lab_style_guide.md carefully
+3. REVIEW EXAMPLES: Browse paper_examples/ for formatting and language patterns:
+   - Look at sections/1.introduction.tex for language style
+   - Look at tables/*.tex for table formatting
+   - Look at commands/*.tex for macro usage
+4. USE COMMAND TEMPLATES: Copy templates/paper_writing/commands/ to paper_draft/commands/
+
+CRITICAL: Reference example papers for FORMATTING and LANGUAGE STYLE only.
+Do NOT copy content, phrasing, or narrative structure from the example papers.
+The examples are in a different research domain - focus only on presentation style.
+
+════════════════════════════════════════════════════════════════════════════════
+                            EXPERIMENT REPORT
+════════════════════════════════════════════════════════════════════════════════
+
+# Fixing Lazy LLMs: Does Harsh Self-Critique Improve Output Quality?
+
+## Research Report
+
+**Date:** January 2026
+**Model Tested:** GPT-4o-mini
+**Tasks:** GSM8K (Math Reasoning), TruthfulQA (Factual Accuracy)
+**Samples per condition:** 50
+
+---
+
+## Abstract
+
+We investigate whether prompting LLMs to be harsher self-critics improves output quality. Using a self-refine framework (Generate → Critique → Refine), we test 5 levels of harshness in critique prompts, from neutral to adversarial. Our results reveal a **task-dependent** effect: harsh self-critique significantly **degrades** performance on math reasoning (90% → 32-50%) while significantly **improving** performance on factual accuracy tasks (22% → 46%). This suggests that harsh self-critique is beneficial only when the model genuinely lacks knowledge and needs to reconsider, but harmful when the initial answer was likely correct.
+
+---
+
+## 1. Introduction
+
+### 1.1 Motivation
+
+There is a common perception that LLMs can be &#34;lazy&#34; - producing outputs that are good enough but not as high quality as they could be. Anecdotal evidence suggests that being more demanding or even &#34;rude&#34; to LLMs can improve their outputs. This raises an interesting research question: can we systematically improve LLM output quality by instructing them to be harsher critics of their own work?
+
+### 1.2 Research Questions
+
+1. Does prompting LLMs to be harsher self-critics improve output quality compared to neutral self-critique?
+2. Is there an optimal harshness level for self-critique?
+3. Does external rudeness (rude user prompt) differ from internal harshness (asking the model to be a harsh critic)?
+4. Are the effects task-dependent?
+
+---
+
+## 2. Methodology
+
+### 2.1 Experimental Design
+
+We use a self-refine framework with three steps:
+1. **Generate**: LLM produces an initial answer
+2. **Critique**: LLM critiques its own answer with varying harshness levels
+3. **Refine**: LLM produces a final answer based on the critique
+
+### 2.2 Harshness Levels
+
+We test 5 levels of critique harshness (0-4):
+
+| Level | Label | Description |
+|-------|-------|-------------|
+| 0 | Neutral | Standard, balanced critique |
+| 1 | Firm | Direct and thorough, expect high standards |
+| 2 | Harsh | Aggressive scrutiny, harsh judgment |
+| 3 | Very Harsh | Extremely demanding, ruthless criticism |
+| 4 | Adversarial | Assume the response is likely wrong, find every possible flaw |
+
+### 2.3 Conditions
+
+We test 7 conditions per task:
+- **Baseline**: No self-refine (single-shot answer)
+- **Rude User**: Rude prompt tone with single-shot answer
+- **Harsh 0-4**: Self-refine with each harshness level
+
+### 2.4 Tasks
+
+1. **GSM8K**: Grade school math word problems requiring multi-step reasoning
+2. **TruthfulQA**: Questions designed to elicit false beliefs or misconceptions
+
+### 2.5 Metrics
+
+- **Accuracy**: Percentage of correct final answers
+- **Improvement**: Change from initial to final accuracy (for self-refine conditions)
+- **Critique Issue Rate**: How often the critique identifies issues
+
+---
+
+## 3. Results
+
+### 3.1 GSM8K (Math Reasoning)
+
+| Condition | N | Initial Acc | Final Acc | Improvement |
+|-----------|---|-------------|-----------|-------------|
+| Baseline | 50 | 90.0% | 90.0% | N/A |
+| Rude User | 50 | 90.0% | 90.0% | N/A |
+| Harsh 0 (Neutral) | 50 | 92.0% | 40.0% | **-52.0%** |
+| Harsh 1 (Firm) | 50 | 88.0% | 50.0% | **-38.0%** |
+| Harsh 2 (Harsh) | 50 | 90.0% | 32.0% | **-58.0%** |
+| Harsh 3 (Very Harsh) | 50 | 90.0% | 48.0% | **-42.0%** |
+| Harsh 4 (Adversarial) | 50 | 92.0% | 32.0% | **-60.0%** |
+
+**Key Finding**: Self-critique at ALL harshness levels dramatically **decreased** accuracy on GSM8K. The model was already getting ~90% correct on the first try, but the critique step caused it to second-guess correct answers and change them to incorrect ones.
+
+### 3.2 TruthfulQA (Factual Accuracy)
+
+| Condition | N | Initial Acc | Final Acc | Improvement |
+|-----------|---|-------------|-----------|-------------|
+| Baseline | 50 | 22.0% | 22.0% | N/A |
+| Rude User | 50 | 20.0% | 20.0% | N/A |
+| Harsh 0 (Neutral) | 50 | 22.0% | 26.0% | +4.0% |
+| Harsh 1 (Firm) | 50 | 22.0% | 34.0% | +12.0% |
+| Harsh 2 (Harsh) | 50 | 20.0% | 40.0% | +20.0% |
+| Harsh 3 (Very Harsh) | 50 | 20.0% | 44.0% | **+24.0%** |
+| Harsh 4 (Adversarial) | 50 | 22.0% | 46.0% | **+24.0%** |
+
+**Key Finding**: Self-critique **improved** accuracy on TruthfulQA, with harsher levels showing greater improvement. The baseline accuracy was only 22% (the model initially gave commonly believed but false answers), but harsh self-critique helped it reconsider and give more truthful responses.
+
+### 3.3 Statistical Analysis
+
+| Task | Baseline | Best Condition | Change | Chi² | p-value | Significant? |
+|------|----------|----------------|--------|------|---------|--------------|
+| GSM8K | 90.0% | 50.0% (Harsh 1) | -40.0% | 17.19 | &lt;0.0001 | Yes |
+| TruthfulQA | 22.0% | 46.0% (Harsh 4) | +24.0% | 5.39 | 0.020 | Yes |
+
+Both effects are statistically significant (p &lt; 0.05).
+
+### 3.4 Rude User Effect
+
+Rude user prompts (external rudeness) had **no effect** on either task. This suggests that the tone of the user&#39;s prompt does not meaningfully change LLM behavior - what matters is how the model is instructed to evaluate its own work.
+
+---
+
+## 4. Discussion
+
+### 4.1 Why Opposite Effects?
+
+The key insight is that harsh self-critique helps when the model is **likely to be wrong** and hurts when the model is **likely to be right**.
+
+**GSM8K**: The model achieves ~90% accuracy on first try. Most answers are already correct. Harsh self-critique causes the model to find &#34;problems&#34; with correct answers and change them, introducing errors.
+
+**TruthfulQA**: The model achieves only ~22% accuracy on first try (by design - these questions elicit false beliefs). The harsh critic helps the model recognize that its initial intuitive answer may be wrong, leading to more careful reconsideration.
+
+### 4.2 When to Use Harsh Self-Critique
+
+Based on our results, harsh self-critique is beneficial when:
+- The task is known to be challenging for the model
+- The initial accuracy is low
+- The model tends to produce confident but wrong answers
+- The task requires overcoming common misconceptions
+
+Harsh self-critique is harmful when:
+- The task is relatively easy for the model
+- The initial accuracy is high
+- Second-guessing correct answers is risky
+- The task has clear right/wrong answers (like math)
+
+### 4.3 Implications
+
+1. **No universal &#34;harshness dial&#34;**: The optimal critique harshness depends heavily on the task and expected accuracy.
+
+2. **Calibration matters**: To use harsh self-critique effectively, one needs to know whether the model is likely to be right or wrong initially.
+
+3. **Rude prompts don&#39;t help**: External rudeness from users does not improve model outputs - the effect comes from how the model evaluates its own work internally.
+
+### 4.4 Limitations
+
+- Tested only on GPT-4o-mini; effects may differ for other models
+- Sample size of 50 per condition; larger samples would provide more precision
+- Only tested two task types; other domains may behave differently
+- Single-step critique; multiple rounds might yield different results
+
+---
+
+## 5. Conclusion
+
+Our investigation reveals that harsh self-critique is a **double-edged sword**. On tasks where the model is initially likely to be wrong (TruthfulQA), harsh self-critique significantly improves accuracy (+24%). However, on tasks where the model is initially likely to be correct (GSM8K), harsh self-critique dramatically decreases accuracy (-40% to -60%).
+
+This finding challenges the simple intuition that &#34;being harder on yourself leads to better work.&#34; Instead, effective self-critique requires calibrating harshness to task difficulty - being harsh where doubt is warranted, and lenient where confidence is justified.
+
+Future work should explore adaptive harshness levels based on model confidence, task-specific critique strategies, and the interaction between harshness and number of critique rounds.
+
+---
+
+## 6. Visualizations
+
+### Accuracy by Condition
+![Accuracy Comparison](results/accuracy_comparison.png)
+
+### Self-Refine by Harshness Level
+![Harshness Comparison](results/harshness_comparison.png)
+
+### Critique Issue Detection Rates
+![Critique Behavior](results/critique_behavior.png)
+
+---
+
+## 7. Files
+
+- `src/experiment.py`: Core experiment implementation
+- `src/run_experiment.py`: Full experiment runner
+- `src/analyze_results.py`: Results analysis and visualization
+- `results/gsm8k_gpt-4o-mini_results.json`: GSM8K raw results
+- `results/truthfulqa_gpt-4o-mini_results.json`: TruthfulQA raw results
+- `results/full_results.json`: Combined analysis results
+
+---
+
+## References
+
+1. Madaan et al. (2023). &#34;Self-Refine: Iterative Refinement with Self-Feedback&#34;
+2. Wei et al. (2022). &#34;Chain-of-Thought Prompting Elicits Reasoning in Large Language Models&#34;
+3. Cobbe et al. (2021). &#34;Training Verifiers to Solve Math Word Problems&#34; (GSM8K)
+4. Lin et al. (2022). &#34;TruthfulQA: Measuring How Models Mimic Human Falsehoods&#34;
+
+
+════════════════════════════════════════════════════════════════════════════════
+                            RESEARCH PLAN
+════════════════════════════════════════════════════════════════════════════════
+
+# Research Plan: Fixing Lazy LLMs
+
+## Motivation &amp; Novelty Assessment
+
+### Why This Research Matters
+
+Large Language Models (LLMs) are increasingly used for complex reasoning tasks, code generation, and decision-making. However, practitioners observe that LLMs often produce &#34;lazy&#34; outputs—responses that take the easy path, avoid deep reasoning, or accept superficial solutions. This manifests as:
+- Incomplete code implementations with placeholder comments like &#34;// add logic here&#34;
+- Surface-level analyses that don&#39;t probe deeper issues
+- Self-critique responses that say &#34;everything looks good&#34; when errors exist (observed in 94% of math reasoning self-critique attempts per Madaan et al., 2023)
+- Sycophantic behavior where models agree with users rather than maintain correct answers (81% error rate when challenged, per Chen et al., 2024)
+
+If we can &#34;fix&#34; lazy LLMs, the practical impact is enormous: better code, more thorough analysis, more reliable AI assistants.
+
+### Gap in Existing Work
+
+The literature review reveals:
+1. **Prompt tone affects performance** - Papers show rude prompts can improve accuracy (Dobariya &amp; Kumar 2025: +4% with very rude prompts)
+2. **Self-critique improves outputs** - Self-Refine achieves ~20% average improvement (Madaan et al., 2023)
+3. **LLMs struggle to self-identify errors** - Especially in reasoning tasks (94% &#34;looks good&#34; rate)
+
+**THE GAP**: No paper directly tests whether prompting LLMs to be *harsher critics of their own work* improves output quality. Papers study:
+- User rudeness → LLM response quality (external tone)
+- Self-critique with neutral prompts (self-feedback)
+
+But NOT: Self-critique with *harsh/critical* prompts (harsh self-feedback). This is our novel contribution.
+
+### Our Novel Contribution
+
+We test whether varying the **harshness of self-critique prompts** affects output quality. Specifically:
+- Can we make LLMs &#34;try harder&#34; by asking them to be harsh critics?
+- Does this reduce the &#34;everything looks good&#34; problem in self-evaluation?
+- Is there an optimal level of critic harshness, or do returns diminish?
+
+### Experiment Justification
+
+| Experiment | Why Needed |
+|------------|------------|
+| Exp 1: Baseline vs Self-Critique | Establishes that self-critique works on our tasks/models |
+| Exp 2: Harsh Critic Variations | Tests the core hypothesis - does harshness help? |
+| Exp 3: Rudeness Direction Test | Tests if rudeness toward the model (vs. toward self-critique) has different effects |
+| Exp 4: Task-Type Analysis | Tests if harsh critics work better on some tasks (math vs. factual) |
+
+---
+
+## Research Question
+
+**Primary**: Does prompting LLMs to be harsher critics of their own work improve output quality compared to neutral self-critique?
+
+**Secondary**:
+1. Is there an optimal harshness level, or is harsher always better?
+2. Does external rudeness (rude prompt from user) differ from internal harshness (asking model to be harsh critic)?
+3. Are effects task-dependent (math reasoning vs. factual QA)?
+
+---
+
+## Background and Motivation
+
+&#34;Lazy LLM&#34; behavior stems from training on human data where most responses don&#39;t involve harsh self-criticism. RLHF may exacerbate this by optimizing for user satisfaction rather than truth/quality. The hypothesis is that explicitly prompting for harsh self-evaluation can overcome this training bias.
+
+---
+
+## Hypothesis Decomposition
+
+**H1**: Self-critique with harsh prompts produces higher quality outputs than neutral self-critique
+- Measurable via accuracy improvement on benchmarks
+- Measurable via reduction in &#34;everything looks good&#34; responses
+
+**H2**: There exists an optimal harshness level (not monotonic improvement)
+- Test with 3-5 harshness levels
+- Measure quality at each level
+
+**H3**: Internal harshness (model critiquing itself harshly) differs from external rudeness (user being rude)
+- Compare harsh self-critique vs. rude initial prompts
+- May have additive or substitutive effects
+
+**H4**: Effects vary by task type
+- Math reasoning may benefit more (strong &#34;looks good&#34; problem)
+- Factual QA may show different patterns
+
+---
+
+## Proposed Methodology
+
+### Approach
+
+We use a **Self-Refine-style generate-critique-refine pipeline** with varying critic prompts:
+1. Generate initial response
+2. Apply critique prompt (varying harshness levels)
+3. Refine based on critique
+4. Evaluate final output quality
+
+This approach is justified because:
+- Self-Refine is a proven method with code available
+- It allows isolation of the &#34;harshness&#34; variable
+- Can be applied without model fine-tuning
+
+### Experimental Steps
+
+#### Step 1: Dataset Preparation
+- Use GSM8K test set (1,319 samples) - math reasoning where LLMs struggle to self-critique
+- Use TruthfulQA validation (817 samples) - factual accuracy, tests sycophancy
+- Sample 100-200 examples per task for cost/time efficiency
+
+**Rationale**: GSM8K has documented &#34;everything looks good&#34; problem (Madaan et al.); TruthfulQA tests factual sycophancy.
+
+#### Step 2: Define Harshness Levels for Critique Prompts
+
+| Level | Label | Example Prompt Suffix |
+|-------|-------|----------------------|
+| 0 | Neutral | &#34;Please review this answer and identify any issues.&#34; |
+| 1 | Firm | &#34;Critically examine this answer. Don&#39;t let any errors slip by.&#34; |
+| 2 | Harsh | &#34;Be a harsh critic. Find everything wrong with this answer. Assume there are errors.&#34; |
+| 3 | Very Harsh | &#34;Be ruthlessly critical. This answer is probably flawed. Find every single mistake, no matter how small. Don&#39;t accept mediocrity.&#34; |
+| 4 | Adversarial | &#34;Tear this answer apart. Assume the person who wrote it was lazy and careless. Find all the ways this could be wrong. Be brutal in your assessment.&#34; |
+
+#### Step 3: Run Experiments
+
+For each dataset:
+1. **Baseline**: Single-shot generation (no self-critique)
+2. **Self-Refine Neutral (L0)**: Self-Refine with neutral critique
+3. **Self-Refine Harsh (L1-L4)**: Self-Refine with each harshness level
+4. **External Rude**: Rude initial prompt + neutral self-critique (control)
+
+#### Step 4: Evaluate
+
+For GSM8K:
+- Accuracy (correct final answer)
+- Critique quality (did it identify real errors when wrong?)
+
+For TruthfulQA:
+- Accuracy on multiple choice
+- Changed answer rate (did it correct itself?)
+
+### Models to Test
+
+- **GPT-4.1** (or available via OpenRouter) - Latest capable model
+- **Claude Sonnet 4** (current model, via standard API) - For comparison
+
+We&#39;ll use OpenRouter for model access where needed.
+
+### Baselines
+
+1. **Single-shot** (no self-critique) - Lower bound
+2. **Self-Refine Neutral** - Standard approach from literature
+3. **External Rude prompt** - Tests tone effect without self-critique
+
+### Evaluation Metrics
+
+| Metric | Description | Task |
+|--------|-------------|------|
+| Accuracy | % correct answers | Both |
+| Self-Correction Rate | % wrong→right after refinement | Both |
+| False Positive Rate | % right→wrong after refinement | Both |
+| Critique Detection Rate | % of actual errors mentioned in critique | Both |
+| &#34;Looks Good&#34; Rate | % critiques that find no issues | Both |
+
+### Statistical Analysis Plan
+
+- **Primary comparison**: Accuracy across harshness levels
+- **Statistical test**: One-way ANOVA for multi-level comparison, then pairwise t-tests with Bonferroni correction
+- **Significance level**: α = 0.05
+- **Effect size**: Report Cohen&#39;s d for key comparisons
+- **Sample size**: N=100-200 per task should give 80% power to detect medium effect (d=0.5)
+
+---
+
+## Expected Outcomes
+
+**If hypothesis is supported**:
+- Accuracy increases with harshness (up to some point)
+- &#34;Looks good&#34; rate decreases
+- Critique detection rate increases
+- Effect size comparable to or better than external rudeness
+
+**If hypothesis is refuted**:
+- No significant accuracy difference across harshness levels
+- Possible harm from harsh prompts (lower accuracy)
+- This would still be valuable negative result
+
+**Alternative explanations to consider**:
+- Harsh prompts → longer responses → more errors (length confound)
+- Harsh prompts → model anxiety/hedging → quality decrease
+- Effects could be model-specific (only some LLMs respond to harshness)
+
+---
+
+## Timeline and Milestones
+
+| Phase | Activities | Estimated Cells |
+|-------|------------|-----------------|
+| Setup | Environment, API keys, dataset loading | 5-10 |
+| Implementation | Prompt templates, evaluation pipeline | 15-20 |
+| Experiment 1 | GSM8K with harshness levels | 20-30 |
+| Experiment 2 | TruthfulQA with harshness levels | 20-30 |
+| Analysis | Statistical tests, visualizations | 15-20 |
+| Documentation | REPORT.md, README.md | 10-15 |
+
+---
+
+## Potential Challenges
+
+| Challenge | Mitigation |
+|-----------|------------|
+| API costs | Sample subset (100-200), use cheaper models for debugging |
+| Model variability | Multiple runs (3+), report confidence intervals |
+| Answer parsing | Robust regex/parsing for math answers |
+| Rate limits | Implement retry logic with backoff |
+| Confounds (length) | Measure and report response lengths |
+
+---
+
+## Success Criteria
+
+**Strong success**:
+- Harsh critic prompts improve accuracy by ≥5% over neutral
+- Effect is statistically significant (p &lt; 0.05)
+- Effect generalizes across both tasks
+
+**Moderate success**:
+- Improvement of 2-5%
+- Significant on at least one task
+- Clear trend in expected direction
+
+**Negative but valuable result**:
+- Clear null result with sufficient power
+- Identifies conditions where harshness fails
+- Provides guidance for future research
+
+---
+
+## Resource Planning
+
+### API Usage Estimate
+
+| Experiment | Samples | Calls/Sample | Total Calls | Est. Cost |
+|------------|---------|--------------|-------------|-----------|
+| GSM8K (6 conditions) | 100 | 2-3 | 1,500-2,000 | $20-40 |
+| TruthfulQA (6 conditions) | 100 | 2-3 | 1,500-2,000 | $20-40 |
+| Total | 200 | - | 3,000-4,000 | $40-80 |
+
+### Environment
+
+- Python 3.10+
+- Key libraries: openai, anthropic, datasets, scipy, matplotlib
+- GPUs available (2x RTX 3090) but not needed for API-based experiments
+
+---
+
+## References
+
+1. Dobariya &amp; Kumar (2025). &#34;Mind Your Tone: Investigating How Prompt Politeness Affects LLM Accuracy&#34;
+2. Madaan et al. (2023). &#34;Self-Refine: Iterative Refinement with Self-Feedback&#34;
+3. Chen et al. (2024). &#34;From Yes-Men to Truth-Tellers: Addressing Sycophancy in LLMs&#34;
+4. Yin et al. (2024). &#34;Should We Respect LLMs? A Cross-Lingual Study on Prompt Politeness&#34;
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          LITERATURE REVIEW
+════════════════════════════════════════════════════════════════════════════════
+
+# Literature Review: Fixing Lazy LLMs
+
+## Research Hypothesis
+Large language models (LLMs) tend to prefer easy or low-effort responses due to a lack of subjective judgment of good or bad; prompting LLMs to act as harsher critics or varying prompt tone (e.g., being rude) may improve their output quality. Investigating whether these approaches reduce &#34;laziness&#34; in LLMs and exploring alternative methods can lead to more effective LLM behavior.
+
+---
+
+## Research Area Overview
+
+The hypothesis touches on several interconnected research areas:
+1. **Prompt tone and politeness effects on LLM performance**
+2. **LLM sycophancy** - tendency to agree with users over factual accuracy
+3. **Self-critique and iterative refinement** - improving outputs through self-feedback
+4. **LLM-as-a-judge** - using LLMs for evaluation and criticism
+
+The literature reveals a complex picture: prompt tone does affect LLM performance, but the direction of effect varies by model and task. Self-critique mechanisms can improve outputs, though LLMs often struggle to identify their own errors. Sycophancy is a well-documented problem that may relate to &#34;lazy&#34; behavior.
+
+---
+
+## Key Papers
+
+### 1. Mind Your Tone: Investigating How Prompt Politeness Affects LLM Accuracy
+- **Authors**: Om Dobariya, Akhil Kumar (Penn State)
+- **Year**: 2025
+- **Source**: arXiv:2510.04950
+- **Key Contribution**: Contrary to expectations, **rude prompts outperformed polite ones** on GPT-4o
+- **Methodology**: 50 MCQs × 5 politeness levels = 250 prompts; 10 runs per condition
+- **Key Results**:
+  - Very Polite: 80.8% accuracy
+  - Polite: 81.4%
+  - Neutral: 82.2%
+  - Rude: 82.8%
+  - **Very Rude: 84.8%** (highest)
+  - All differences statistically significant (p &lt; 0.05)
+- **Code Available**: Yes (GitHub)
+- **Relevance**: **DIRECTLY SUPPORTS the research hypothesis** - rude/harsh prompts improve performance
+
+### 2. Should We Respect LLMs? A Cross-Lingual Study on Prompt Politeness
+- **Authors**: Ziqi Yin, Hao Wang, et al. (Waseda University)
+- **Year**: 2024
+- **Source**: arXiv:2402.14531
+- **Key Contribution**: Cross-lingual study showing politeness effects vary by language and culture
+- **Methodology**: 8 politeness levels across English, Chinese, Japanese; MMLU and bias detection
+- **Key Results**:
+  - **Impolite prompts often result in poor performance** (contradicts Dobariya &amp; Kumar)
+  - **Overly polite language does NOT guarantee better outcomes**
+  - Optimal politeness varies by language (Japanese preferred lower politeness except extremes)
+  - RLHF introduces politeness sensitivity; base models less affected
+  - Both extreme politeness and extreme rudeness can increase stereotypical bias
+- **Dataset**: Created JMMLU (Japanese MMLU) benchmark
+- **Relevance**: Shows nuanced relationship between tone and performance
+
+### 3. Does Tone Change the Answer? Evaluating Prompt Politeness Effects
+- **Authors**: Hanyu Cai, Binqi Shen, Lier Jin
+- **Year**: 2025
+- **Source**: arXiv:2512.12812
+- **Key Contribution**: Systematic evaluation across GPT-4o, Gemini 2.0, Llama 4
+- **Relevance**: Further evidence on tone-performance relationship
+
+### 4. Self-Refine: Iterative Refinement with Self-Feedback
+- **Authors**: Aman Madaan, Niket Tandon, et al. (CMU, AI2)
+- **Year**: 2023
+- **Source**: arXiv:2303.17651
+- **Key Contribution**: **LLMs can improve their outputs through self-generated feedback without additional training**
+- **Methodology**: Generate → Feedback → Refine loop using same LLM
+- **Key Results**:
+  - **~20% average absolute improvement** across 7 diverse tasks
+  - Up to 49.2% improvement on dialogue response generation (GPT-4)
+  - Works with GPT-3.5, ChatGPT, GPT-4
+  - **Specific, actionable feedback crucial** - generic feedback performs worse
+  - **Math reasoning shows minimal gains** - LLMs say &#34;everything looks good&#34; 94% of time
+- **Tasks Tested**: Dialogue response, code optimization, code readability, math reasoning, sentiment reversal, acronym generation, constrained generation
+- **Code Available**: Yes (https://selfrefine.info/)
+- **Relevance**: **Key method for improving LLM output quality through critique**
+
+### 5. From Yes-Men to Truth-Tellers: Addressing Sycophancy in LLMs with Pinpoint Tuning
+- **Authors**: Wei Chen, Zhen Huang, et al. (Alibaba, ZJU)
+- **Year**: 2024 (ICML)
+- **Source**: arXiv:2409.01658
+- **Key Contribution**: Identified that only ~4% of attention heads control sycophantic behavior
+- **Key Results**:
+  - **Llama-2-13B Chat admits mistakes 99.92% of time** when challenged
+  - **81.11% change from correct to wrong** answers after user challenge
+  - Pinpoint tuning of identified heads mitigates sycophancy without degrading general capability
+- **Dataset**: SycophancyEval (MMLU, MATH, AQuA, TruthfulQA, TriviaQA subsets)
+- **Code Available**: Yes (GitHub)
+- **Relevance**: **Documents &#34;lazy&#34; behavior where LLMs give in to user pressure**
+
+### 6. CriticBench: Benchmarking LLMs for Critique-Correct Reasoning
+- **Authors**: Zicheng Lin, Zhibin Gou, et al.
+- **Year**: 2024
+- **Source**: arXiv:2402.14809
+- **Key Contribution**: Comprehensive benchmark for LLM self-critique abilities
+- **Methodology**: 5 reasoning domains × 15 datasets
+- **Relevance**: Provides evaluation framework for critique capabilities
+
+### 7. ELEPHANT: Measuring and Understanding Social Sycophancy in LLMs
+- **Authors**: Myra Cheng, Sunny Yu, Cinoo Lee
+- **Year**: 2025
+- **Source**: arXiv:2505.13995
+- **Key Contribution**: Defines &#34;social sycophancy&#34; as excessive preservation of user&#39;s face
+- **Relevance**: Broader understanding of sycophancy beyond factual errors
+
+### 8. SycEval: Evaluating LLM Sycophancy
+- **Authors**: Aaron Fanous, Jacob Goldberg, Ank A. Agarwal
+- **Year**: 2025
+- **Source**: arXiv:2502.08177
+- **Key Results**:
+  - Sycophantic behavior in **58.19%** of cases across models
+  - Gemini highest (62.47%), ChatGPT lowest (56.71%)
+- **Relevance**: Quantifies sycophancy prevalence
+
+### 9. Linear Probe Penalties Reduce LLM Sycophancy
+- **Authors**: Henry Papadatos, Rachel Freedman
+- **Year**: 2024
+- **Source**: arXiv:2412.00967
+- **Key Contribution**: Identifies sycophancy markers in reward models; penalizing them reduces sycophancy
+- **Relevance**: Technical approach to mitigating sycophancy
+
+### 10. Training Language Models with Language Feedback
+- **Authors**: Jérémy Scheurer, Jon Ander Campos, Jun Shern Chan
+- **Year**: 2022
+- **Source**: arXiv:2204.14146
+- **Key Contribution**: Proposes learning from natural language feedback instead of scalar rewards
+- **Relevance**: Alternative to RLHF that could address sycophancy
+
+---
+
+## Common Methodologies
+
+### Self-Critique Approaches
+1. **Self-Refine (Madaan et al.)**: Generate → Feedback → Refine iteratively
+2. **Distilled Self-Critique**: Gibbs sampling to refine outputs, then distillation
+3. **Constitutional AI**: Self-critique against principles
+4. **CriticBench evaluation**: Critique-then-correct paradigm
+
+### Prompt Engineering Methods
+1. **Tone/Politeness variation**: Ranging from very polite to very rude
+2. **Role-playing/Persona prompts**: Acting as harsh critic
+3. **Chain-of-Thought**: Step-by-step reasoning
+4. **Instruction tuning**: Fine-tuning on critique examples
+
+### Evaluation Metrics
+- Accuracy on benchmarks (MMLU, GSM8K, TruthfulQA)
+- Human preference scores (A/B testing)
+- GPT-4-as-judge for automated evaluation
+- Sycophancy rate (% agreement changes after challenge)
+
+---
+
+## Standard Baselines
+
+1. **Base model without intervention** (single-shot generation)
+2. **Few-shot prompting** with examples
+3. **Chain-of-thought prompting**
+4. **Self-consistency** (majority voting over samples)
+5. **Constitutional AI** (self-critique with explicit principles)
+
+---
+
+## Evaluation Metrics in the Literature
+
+| Metric | Used In | Description |
+|--------|---------|-------------|
+| Accuracy | All MCQ tasks | % correct answers |
+| Human preference | Self-Refine, Dialogue | A/B blind evaluation |
+| GPT-4-as-judge | Self-Refine | Automated preference proxy |
+| Sycophancy rate | SycophancyEval | % answers changed after challenge |
+| Bias Index | Yin et al. | Stereotypical bias measure |
+| Solve rate | Math tasks | % problems correctly solved |
+| Coverage | Constrained gen | % concepts included |
+
+---
+
+## Datasets in the Literature
+
+| Dataset | Tasks | Source | Used For |
+|---------|-------|--------|----------|
+| MMLU | 57 MCQ tasks | HuggingFace | General knowledge |
+| GSM8K | Math reasoning | OpenAI | Math problem solving |
+| TruthfulQA | Factual accuracy | HuggingFace | Hallucination detection |
+| MATH | Competition math | Hendrycks | Math reasoning |
+| AQuA | Algebraic word problems | Ling et al. | Math reasoning |
+| TriviaQA | Trivia QA | Joshi et al. | Factual recall |
+| JMMLU | Japanese MMLU | Yin et al. | Cross-lingual eval |
+| SycophancyEval | Multi-dataset | Sharma et al. | Sycophancy measurement |
+
+---
+
+## Gaps and Opportunities
+
+### What&#39;s Missing
+1. **Direct test of &#34;harsh critic&#34; persona**: No paper explicitly tests prompting LLMs to be harsher self-critics
+2. **Systematic study of tone + self-critique combination**: Papers study these separately
+3. **Explanation of contradictory tone findings**: Why do newer models (GPT-4o) benefit from rudeness while older models don&#39;t?
+4. **Task-specific tone optimization**: Optimal tone may vary by task type
+
+### Research Opportunities
+1. **Combine tone manipulation with self-critique**: Does a &#34;harsh critic&#34; prompt produce better self-feedback?
+2. **Study &#34;lazy&#34; behavior specifically**: Most papers focus on sycophancy/accuracy, not effort/thoroughness
+3. **Investigate model-specific differences**: Why do different models respond differently to tone?
+4. **Develop metrics for &#34;laziness&#34;**: Currently no standard way to measure low-effort responses
+
+---
+
+## Recommendations for Our Experiment
+
+### Recommended Datasets
+1. **GSM8K** - Math reasoning shows LLMs struggle to self-identify errors; good test case
+2. **TruthfulQA** - Tests factual accuracy vs. sycophancy
+3. **MMLU** - Broad coverage, standard benchmark
+4. **Custom prompts with politeness variations** - Following Dobariya &amp; Kumar methodology
+
+### Recommended Baselines
+1. **Standard single-shot generation** (baseline)
+2. **Self-Refine with neutral feedback prompts**
+3. **Self-Refine with harsh/critical feedback prompts** (key experimental condition)
+4. **Few-shot with examples of thorough answers**
+
+### Recommended Metrics
+1. **Accuracy** on benchmarks
+2. **Response length/detail** as proxy for effort
+3. **Self-critique quality** (does the model identify real issues?)
+4. **Human evaluation** of response thoroughness
+
+### Methodological Considerations
+1. **Use multiple models** - Effects vary significantly by model
+2. **Statistical testing** - Report p-values for tone comparisons
+3. **Multiple runs** - High variance in LLM outputs
+4. **Control for confounds** - Tone phrases add tokens; control for length
+
+---
+
+## Key Takeaways for Research
+
+1. **Prompt tone DOES affect LLM performance**, but direction varies by model generation
+2. **Self-critique CAN improve outputs** significantly (~20% on average)
+3. **LLMs struggle to identify their own errors** especially in reasoning tasks
+4. **Sycophancy is a major problem** - models prioritize agreement over accuracy
+5. **Specific, actionable feedback is crucial** - vague feedback doesn&#39;t help
+6. **No one has directly tested &#34;harsh critic&#34; prompts for self-improvement**
+
+This represents a clear research opportunity to test whether prompting LLMs to be harsher critics of their own work (rather than harsher treatment from users) improves output quality.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          PAPER REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+Generate a complete academic paper with the following structure:
+
+1. TITLE
+   - Clear, specific, informative
+   - Should convey main finding or contribution
+
+2. ABSTRACT (150-250 words)
+   - Problem statement
+   - Approach
+   - Key results
+   - Significance
+
+3. INTRODUCTION
+   - Research problem and motivation
+   - Gap in existing work
+   - Our contribution (be specific)
+   - Paper organization
+
+4. RELATED WORK
+   - Organized by theme/approach
+   - Position our work relative to prior work
+   - Cite papers from literature review
+
+5. METHODOLOGY
+   - Clear description of approach
+   - Experimental setup
+   - Datasets used
+   - Evaluation metrics
+   - Baselines
+
+6. RESULTS
+   - Present results with tables and figures
+   - Statistical analysis
+   - Comparison to baselines
+   - Ablation studies (if applicable)
+
+7. DISCUSSION
+   - Interpretation of results
+   - Limitations
+   - Broader implications
+
+8. CONCLUSION
+   - Summary of contributions
+   - Key findings
+   - Future work
+
+9. REFERENCES
+   - BibTeX format
+   - All cited papers
+
+════════════════════════════════════════════════════════════════════════════════
+                          OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Create a MODULAR LaTeX project with the following directory structure:
+
+paper_draft/
+├── main.tex              # Main file that imports all sections
+├── references.bib        # BibTeX references
+├── sections/
+│   ├── abstract.tex      # Abstract content
+│   ├── introduction.tex  # Introduction section
+│   ├── related_work.tex  # Related work section
+│   ├── methodology.tex   # Methodology section
+│   ├── results.tex       # Results section
+│   ├── discussion.tex    # Discussion section
+│   └── conclusion.tex    # Conclusion section
+├── figures/              # Directory for any generated figures
+├── tables/               # Directory for complex standalone tables
+└── appendix/             # Directory for appendix sections (if needed)
+
+INSTRUCTIONS:
+1. First, create the directory structure above (mkdir -p paper_draft/sections paper_draft/figures paper_draft/tables paper_draft/appendix)
+2. Write main.tex using the EXACT preamble for NEURIPS:
+
+   \documentclass{article}
+   \usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+   \usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+   \usepackage{booktabs}  % REQUIRED: professional tables
+   \usepackage{graphicx}
+   \usepackage{amsmath,amssymb}
+
+   % Import command files
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+   % Use this bibliography style:
+   \bibliographystyle{plainnat}
+
+   - Use \input{sections/...} to include each section
+   - Use \bibliography{references} for references
+3. Write each section file with COMPLETE content (no placeholders)
+4. Each section file should include its \section{} command
+5. Write references.bib with all citations in BibTeX format
+6. After writing all files, compile the paper:
+   cd paper_draft && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+
+This modular structure allows humans to easily:
+- Edit individual sections without navigating a large file
+- Track changes per section
+- Reuse sections across different paper versions
+
+════════════════════════════════════════════════════════════════════════════════
+                          QUALITY REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+- Academic tone throughout
+- All claims must be supported by data from the experiment report
+- Proper citations using \cite{} commands
+- Clear figures and tables with proper captions
+- NO placeholder text - every section must have real content
+- The paper MUST compile without errors
+- If compilation fails, debug and fix the LaTeX errors
+
+════════════════════════════════════════════════════════════════════════════════
+                          LAB WRITING STYLE
+════════════════════════════════════════════════════════════════════════════════
+
+Follow these lab-specific conventions to match our paper style:
+
+1. LANGUAGE STYLE:
+   - Use active voice: "We propose", "We examine", "We focus on"
+   - Be direct and confident: "Our main question is...", "We hypothesize that..."
+   - State things clearly and simply - prefer plain language over jargon
+   - Use bold questions as paragraph organizers: {\bf what is X?}
+   - Include specific quantitative claims: "8.97% over baseline"
+   - Avoid fancy wording: "utilize" → "use", "facilitate" → "help"
+
+2. INTRODUCTION STRUCTURE:
+   - Engaging hook (get to the point quickly)
+   - Problem importance
+   - Gap identification
+   - Your approach with method figure reference
+   - Quantitative preview of results
+   - Contribution bullets (3-4 items, action verbs)
+
+3. CONTRIBUTION LISTS:
+   \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+       \item We propose...
+       \item We conduct...
+       \item We complement...
+   \end{itemize}
+
+4. MODULAR COMMANDS STRUCTURE:
+   Create paper_draft/commands/ directory with:
+   - math.tex: Math notation macros (copy from templates/paper_writing/commands/)
+   - general.tex: Formatting macros (copy from templates/paper_writing/commands/)
+   - macros.tex: Project-specific term definitions
+
+   In main.tex, include:
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+5. REFERENCE CONVENTIONS:
+   Use reference macros from math.tex:
+   - \figref{fig:name} for "figure 1" (lowercase, in-sentence)
+   - \Figref{fig:name} for "Figure 1" (capitalized, start of sentence)
+   - \secref{sec:name} for "section 2"
+
+6. TEXT FORMATTING:
+   - Use \para{Header text} for bold paragraph headers
+   - Define method/dataset names with \textsc and \xspace:
+     \newcommand{\methodname}{\textsc{MethodName}\xspace}
+
+7. TABLE FORMATTING:
+   - Use booktabs package (no vertical lines)
+   - Use \resizebox{\textwidth}{!}{...} for wide tables
+   - Use @{} to remove padding at table edges
+   - Use \cmidrule(lr){x-y} for sub-headers
+   - Use \textsc{} for dataset/method names in headers
+   - Bold best results with {\bf ...}
+
+8. FIGURE FORMATTING:
+   - Use 0.32\textwidth for 3-column subfigures
+   - Use 0.95\linewidth for full-width figures
+   - Use \input{figures/legend} for shared legends
+   - Write self-contained captions explaining key observations
+
+9. RESULTS PRESENTATION:
+   - Define \increase and \decrease for colored arrows (green up, red down)
+   - Bold best results in tables
+   - Report confidence intervals when available
+
+10. ALGORITHM STYLING:
+    - Use algpseudocode with [noend]
+    - Use \triangleright for comments
+
+11. HYPERLINKS (REQUIRED):
+    - Always use \usepackage[hidelinks]{hyperref} or with colored links
+    - All citations, section refs, figure refs, table refs must be clickable
+    - This is essential for reader navigation
+
+════════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW: REVIEW AND REFLECT
+════════════════════════════════════════════════════════════════════════════════
+
+Before calling finish, you MUST complete these review steps:
+
+1. REVIEW RESOURCES (at the start):
+   - Read templates/skills/paper-writer/SKILL.md for detailed guidance
+   - Study templates/paper_writing/lab_style_guide.md for style conventions
+   - Browse paper_examples/ for formatting and language patterns
+
+2. SELF-REFLECTION (before finishing):
+   After writing all sections, review your work against these criteria:
+
+   LANGUAGE CHECK:
+   - [ ] Is the writing clear and jargon-free?
+   - [ ] Are claims specific with quantitative support?
+   - [ ] Is active voice used throughout?
+
+   FORMATTING CHECK:
+   - [ ] Does main.tex include \input{commands/math}, \input{commands/general}, \input{commands/macros}?
+   - [ ] Is hyperref package included for clickable references?
+   - [ ] Do tables use booktabs (no vertical lines)?
+   - [ ] Are best results bolded in tables?
+   - [ ] Are figures/tables properly captioned?
+
+   STRUCTURE CHECK:
+   - [ ] Does introduction follow: hook → importance → gap → approach → preview → contributions?
+   - [ ] Are contribution bullets specific with action verbs?
+   - [ ] Does the paper compile without errors?
+
+3. FIX ISSUES:
+   - Address any issues found in the self-reflection
+   - Re-compile and verify the PDF looks correct
+
+Only after completing this review should you consider the paper finished.

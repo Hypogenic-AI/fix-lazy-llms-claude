@@ -1,0 +1,21 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Related Work}{}% 2
+\BOOKMARK [1][-]{section.3}{Methodology}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Self-Refine Framework}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Harshness Levels}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Experimental Conditions}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{Tasks and Datasets}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.5}{Model and Implementation}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.6}{Evaluation Metrics}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Results}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Main Results}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{GSM8K: Harsh Critique Harms Performance}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.3}{TruthfulQA: Harsh Critique Improves Performance}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.4}{Statistical Significance}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.5}{Rude User Has No Effect}{section.4}% 15
+\BOOKMARK [1][-]{section.5}{Discussion}{}% 16
+\BOOKMARK [2][-]{subsection.5.1}{Why Opposite Effects?}{section.5}% 17
+\BOOKMARK [2][-]{subsection.5.2}{Practical Implications}{section.5}% 18
+\BOOKMARK [2][-]{subsection.5.3}{Connection to Sycophancy}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.4}{Limitations}{section.5}% 20
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 21

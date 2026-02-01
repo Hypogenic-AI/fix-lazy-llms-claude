@@ -1,0 +1,17 @@
+\section{Related Work}
+\label{sec:related_work}
+
+\para{Self-Critique and Iterative Refinement.}
+Self-critique mechanisms enable LLMs to improve their outputs without additional training. \citet{madaan2023selfrefine} introduced \selfrefine, a generate-critique-refine framework that achieves approximately 20\% improvement across diverse tasks. However, they observe that self-critique struggles with math reasoning, where models declare ``everything looks good'' 94\% of the time even when errors exist. Our work directly addresses this limitation by varying critique harshness, though we find that harsher critique paradoxically worsens math performance by inducing false negatives rather than reducing false positives. Constitutional AI~\citep{bai2022constitutional} uses self-critique against explicit principles for safety, while \citet{scheurer2022training} propose learning from natural language feedback. Unlike these approaches, we focus on the \emph{tone} rather than the \emph{content} of critique prompts.
+
+\para{Prompt Tone and Politeness.}
+Recent work has examined how prompt tone affects LLM performance. \citet{dobariya2025mind} find that rude prompts improve GPT-4o accuracy by approximately 4\% on multiple-choice questions, with ``very rude'' prompts achieving the highest accuracy (84.8\% vs.\ 80.8\% for ``very polite''). However, \citet{yin2024should} show that this effect varies by language and model, with impolite prompts sometimes harming performance. Our work differs by examining \emph{self-directed} harshness (asking the model to be a harsh critic) rather than \emph{user-directed} rudeness. We find that external rudeness has no effect, suggesting these are distinct mechanisms.
+
+\para{LLM Sycophancy.}
+Sycophancy---the tendency to agree with users over factual accuracy---is well-documented in LLMs. \citet{chen2024yesmen} find that Llama-2-13B Chat changes from correct to incorrect answers 81\% of the time when users express disagreement, and identify that only $\sim$4\% of attention heads control this behavior. \citet{fanous2025syceval} report sycophantic behavior in 58\% of cases across models. Our work reveals a related phenomenon: when asked to be harsh self-critics, models may change correct answers to incorrect ones---a form of self-induced sycophancy where the model defers to its own harsh critique rather than external user pressure.
+
+\para{LLM-as-Judge.}
+Using LLMs as evaluators has become standard practice~\citep{zheng2023judging}. CriticBench~\citep{lin2024criticbench} provides a benchmark for LLM critique abilities across reasoning domains. Our work uses self-evaluation but focuses on how evaluation \emph{tone} affects final output quality rather than evaluation accuracy per se.
+
+\para{Positioning.}
+Unlike prior work that studies either self-critique methods or prompt tone effects, we examine their intersection: how the \emph{harshness} of self-critique prompts affects output quality. We discover that this interaction is strongly task-dependent, with opposite effects on high- versus low-accuracy tasks. This finding bridges the self-critique and prompt tone literatures and provides practical guidance for when to employ harsh versus lenient self-evaluation.

@@ -1,0 +1,10 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We investigated whether prompting LLMs to be harsher critics of their own work improves output quality. Our experiments reveal that harsh self-critique is a double-edged sword: it significantly improves performance on tasks where the model is initially likely to be wrong (+24\% on \truthful) but significantly harms performance on tasks where the model is initially likely to be correct ($-$40 to $-$60\% on \gsm).
+
+This finding challenges the intuition that ``being harder on yourself leads to better work.'' In the context of LLM self-evaluation, harsh critique increases type I errors (finding problems where none exist) at the cost of decreasing type II errors (missing real problems). The optimal level of harshness depends on the base rate of errors: harsh when errors are common, lenient when they are rare.
+
+Our work provides practical guidance for practitioners using self-critique mechanisms: first estimate expected initial accuracy, then calibrate critique harshness accordingly. It also suggests that adaptive approaches---where critique intensity varies based on model confidence or task characteristics---may outperform fixed harshness levels.
+
+Future work should explore how these findings generalize across models and tasks, whether multi-round critique shows different dynamics, and how to design self-critique systems that adapt harshness based on the model's uncertainty about its own answers.

@@ -1,0 +1,80 @@
+\begin{thebibliography}{11}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Bai et~al.(2022)Bai, Kadavath, Kundu, Askell, Kernion, Jones, Chen,
+  Goldie, Mirhoseini, McKinnon, et~al.]{bai2022constitutional}
+Yuntao Bai, Saurav Kadavath, Sandipan Kundu, Amanda Askell, Jackson Kernion,
+  Andy Jones, Anna Chen, Anna Goldie, Azalia Mirhoseini, Cameron McKinnon,
+  et~al.
+\newblock Constitutional {AI}: Harmlessness from {AI} feedback.
+\newblock \emph{arXiv preprint arXiv:2212.08073}, 2022.
+
+\bibitem[Chen et~al.(2024)Chen, Huang, et~al.]{chen2024yesmen}
+Wei Chen, Zhen Huang, et~al.
+\newblock From yes-men to truth-tellers: Addressing sycophancy in {LLM}s with
+  pinpoint tuning.
+\newblock \emph{arXiv preprint arXiv:2409.01658}, 2024.
+
+\bibitem[Cobbe et~al.(2021)Cobbe, Kosaraju, Bavarian, Chen, Jun, Kaiser,
+  Plappert, Tworek, Hilton, Nakano, Hesse, and Schulman]{cobbe2021training}
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz
+  Kaiser, Matthias Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano,
+  Christopher Hesse, and John Schulman.
+\newblock Training verifiers to solve math word problems.
+\newblock \emph{arXiv preprint arXiv:2110.14168}, 2021.
+
+\bibitem[Dobariya and Kumar(2025)]{dobariya2025mind}
+Om~Dobariya and Akhil Kumar.
+\newblock Mind your tone: Investigating how prompt politeness affects {LLM}
+  accuracy.
+\newblock \emph{arXiv preprint arXiv:2510.04950}, 2025.
+
+\bibitem[Fanous et~al.(2025)Fanous, Goldberg, and Agarwal]{fanous2025syceval}
+Aaron Fanous, Jacob Goldberg, and Ank~A. Agarwal.
+\newblock {SycEval}: Evaluating {LLM} sycophancy.
+\newblock \emph{arXiv preprint arXiv:2502.08177}, 2025.
+
+\bibitem[Lin et~al.(2022)Lin, Hilton, and Evans]{lin2022truthfulqa}
+Stephanie Lin, Jacob Hilton, and Owain Evans.
+\newblock {TruthfulQA}: Measuring how models mimic human falsehoods.
+\newblock \emph{arXiv preprint arXiv:2109.07958}, 2022.
+
+\bibitem[Lin et~al.(2024)Lin, Gou, et~al.]{lin2024criticbench}
+Zicheng Lin, Zhibin Gou, et~al.
+\newblock {CriticBench}: Benchmarking {LLM}s for critique-correct reasoning.
+\newblock \emph{arXiv preprint arXiv:2402.14809}, 2024.
+
+\bibitem[Madaan et~al.(2023)Madaan, Tandon, Gupta, Hallinan, Gao, Wiegreffe,
+  Alon, Dziri, Prabhumoye, Yang, Gupta, Majumder, Hermann, Welleck,
+  Yazdanbakhsh, and Clark]{madaan2023selfrefine}
+Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah
+  Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, Shashank
+  Gupta, Bodhisattwa~Prasad Majumder, Katherine Hermann, Sean Welleck, Amir
+  Yazdanbakhsh, and Peter Clark.
+\newblock Self-refine: Iterative refinement with self-feedback.
+\newblock \emph{arXiv preprint arXiv:2303.17651}, 2023.
+
+\bibitem[Scheurer et~al.(2022)Scheurer, Campos, Chan, Chen, Cho, and
+  Boulanger]{scheurer2022training}
+J{\'e}r{\'e}my Scheurer, Jon~Ander Campos, Jun~Shern Chan, Angelica Chen,
+  Kyunghyun Cho, and Ethan~Perez Boulanger.
+\newblock Training language models with language feedback.
+\newblock \emph{arXiv preprint arXiv:2204.14146}, 2022.
+
+\bibitem[Yin et~al.(2024)Yin, Wang, et~al.]{yin2024should}
+Ziqi Yin, Hao Wang, et~al.
+\newblock Should we respect {LLM}s? a cross-lingual study on prompt politeness.
+\newblock \emph{arXiv preprint arXiv:2402.14531}, 2024.
+
+\bibitem[Zheng et~al.(2023)Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li,
+  Li, Xing, et~al.]{zheng2023judging}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao
+  Zhuang, Zi~Lin, Zhuohan Li, Dacheng Li, Eric~P. Xing, et~al.
+\newblock Judging {LLM}-as-a-judge with {MT}-bench and chatbot arena.
+\newblock \emph{arXiv preprint arXiv:2306.05685}, 2023.
+
+\end{thebibliography}

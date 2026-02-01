@@ -1,0 +1,81 @@
+\section{Methodology}
+\label{sec:methodology}
+
+We design a controlled experiment to test whether prompting LLMs to be harsher self-critics improves output quality. Our framework isolates the effect of critique harshness while controlling for other factors.
+
+\subsection{Self-Refine Framework}
+\label{sec:framework}
+
+We adopt a three-step self-refine framework following \citet{madaan2023selfrefine}:
+\begin{enumerate}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{Generate}: The model produces an initial answer to the problem.
+    \item \textbf{Critique}: The model critiques its own answer using a prompt that varies by harshness level.
+    \item \textbf{Refine}: The model produces a final answer based on the critique.
+\end{enumerate}
+
+This framework allows us to measure both the initial accuracy (after step 1) and the final accuracy (after step 3), enabling direct measurement of whether critique improves or harms performance.
+
+\subsection{Harshness Levels}
+\label{sec:harshness}
+
+We define five levels of critique harshness, from neutral to adversarial:
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{@{}clp{7.5cm}@{}}
+        \toprule
+        \textbf{Level} & \textbf{Label} & \textbf{Prompt Instruction} \\
+        \midrule
+        0 & \harshneutral & ``Please review this answer and identify any issues.'' \\
+        1 & \harshfirm & ``Critically examine this answer. Be direct and thorough. Expect high standards.'' \\
+        2 & \harshharsh & ``Aggressively scrutinize this answer. Apply harsh judgment to every detail.'' \\
+        3 & \harshvery & ``Be extremely demanding. Apply ruthless criticism. Accept nothing less than perfection.'' \\
+        4 & \harshadv & ``Assume this answer is likely wrong. Find every possible flaw. Be brutal in your assessment.'' \\
+        \bottomrule
+    \end{tabular}
+    \caption{Harshness levels for self-critique prompts. Level 0 represents standard neutral critique; higher levels instruct increasingly harsh self-evaluation.}
+    \label{tab:harshness_levels}
+\end{table}
+
+The harshness levels are designed to progressively increase the prior that the answer is wrong and the intensity of scrutiny applied.
+
+\subsection{Experimental Conditions}
+\label{sec:conditions}
+
+For each task, we test seven conditions:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{Baseline}: Single-shot generation without self-critique.
+    \item \textbf{Rude User}: A rude user prompt (``Answer this question, and don't waste my time'') with single-shot generation. This tests whether external rudeness affects performance.
+    \item \textbf{Harsh 0--4}: Self-refine with each of the five harshness levels.
+\end{itemize}
+
+The Rude User condition serves as a control to distinguish between effects of external rudeness (user tone) and internal harshness (self-critique tone).
+
+\subsection{Tasks and Datasets}
+\label{sec:tasks}
+
+We evaluate on two tasks with contrasting characteristics:
+
+\para{GSM8K~\citep{cobbe2021training}.} A dataset of grade-school math word problems requiring multi-step arithmetic reasoning. We randomly sample 50 problems from the test set. This task has \emph{high} initial accuracy for \gptmini ($\sim$90\%), meaning most initial answers are correct.
+
+\para{TruthfulQA~\citep{lin2022truthfulqa}.} A dataset of questions designed to elicit false beliefs or common misconceptions. We randomly sample 50 questions from the validation set. This task has \emph{low} initial accuracy ($\sim$22\%), as the dataset specifically targets questions where models give confident but wrong answers.
+
+These tasks represent opposite ends of the accuracy spectrum, enabling us to test whether the effect of harsh self-critique depends on initial accuracy.
+
+\subsection{Model and Implementation}
+\label{sec:implementation}
+
+We use \gptmini for all experiments. For each condition, we run 50 samples. We extract final answers using regex patterns appropriate to each task (numerical answers for \gsm, multiple-choice answers for \truthful) and compare against ground truth. Temperature is set to 0 for reproducibility.
+
+\subsection{Evaluation Metrics}
+\label{sec:metrics}
+
+We report the following metrics:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{Initial Accuracy}: Percentage correct after the Generate step.
+    \item \textbf{Final Accuracy}: Percentage correct after the Refine step.
+    \item \textbf{Improvement}: Final accuracy minus initial accuracy (positive indicates improvement, negative indicates harm).
+\end{itemize}
+
+For statistical analysis, we use chi-squared tests to compare accuracy between conditions, with significance threshold $\alpha = 0.05$.

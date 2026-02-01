@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/literature_review.md",
+        "resources_catalog": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/resources.md",
+        "papers_dir": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/papers",
+        "datasets_dir": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/datasets",
+        "code_dir": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/code"
+      },
+      "log_file": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/logs/resource_finder_claude.log",
+      "transcript_file": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/logs/resource_finder_claude_transcript.jsonl",
+      "elapsed_time": 646.3173017501831
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 9747.673745632172,
+      "log_file": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/logs/execution_claude.log",
+      "transcript_file": "/data/hypogenicai/workspaces/fix-lazy-llms-claude/logs/execution_claude_transcript.jsonl"
+    }
+  },
+  "work_dir": "/data/hypogenicai/workspaces/fix-lazy-llms-claude"
+}

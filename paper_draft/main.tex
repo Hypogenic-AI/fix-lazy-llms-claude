@@ -1,0 +1,50 @@
+\documentclass{article}
+
+% NeurIPS 2025 style
+\usepackage[final]{neurips_2025}
+
+% Standard packages
+\usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{enumitem}
+
+% Import command files
+\input{commands/math}
+\input{commands/general}
+\input{commands/macros}
+
+% Caption configuration
+\usepackage{caption}
+\captionsetup[subfigure]{aboveskip=4pt,belowskip=4pt}
+\captionsetup[table]{aboveskip=4pt,belowskip=4pt}
+\captionsetup[figure]{aboveskip=4pt,belowskip=4pt}
+
+\title{The Double-Edged Sword of Harsh Self-Critique: \\
+Task-Dependent Effects on LLM Output Quality}
+
+\author{
+  Anonymous Author(s)
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/methodology}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

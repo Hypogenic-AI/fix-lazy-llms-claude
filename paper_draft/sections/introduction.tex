@@ -1,0 +1,18 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Large language models increasingly serve as reasoning engines for complex tasks, from mathematical problem-solving to factual question answering. Practitioners frequently observe that these models can be ``lazy''---producing outputs that are good enough but not as high quality as they could achieve. This perception has spawned techniques like self-critique and iterative refinement, where models evaluate and improve their own outputs~\citep{madaan2023selfrefine}. Anecdotal evidence even suggests that being more demanding or harsh with LLMs improves their outputs. But does systematically instructing LLMs to be harsher critics of their own work actually improve output quality?
+
+We address this question through a controlled study of \emph{harsh self-critique}. Using a generate-critique-refine framework, we vary the harshness of the critique prompt across five levels---from neutral (``identify any issues'') to adversarial (``assume this answer is wrong; find every flaw''). We evaluate on two tasks with fundamentally different characteristics: \gsm, where \gptmini achieves 90\% accuracy on the first attempt, and \truthful, where the same model achieves only 22\% initially because the dataset is designed to elicit common misconceptions.
+
+Our experiments reveal a striking asymmetry: the same intervention that dramatically improves one task dramatically harms another. On \gsm, harsh self-critique \emph{decreases} accuracy from 90\% to as low as 32\%---a 58 percentage point drop. The model's harsh inner critic finds ``problems'' with correct answers and convinces itself to change them. On \truthful, harsh self-critique \emph{increases} accuracy from 22\% to 46\%---a 24 percentage point improvement. Here, the harsh critic helps the model recognize that its intuitive (but wrong) initial answer deserves reconsideration.
+
+This pattern suggests a simple but important principle: harsh self-critique helps when the model is likely to be wrong, but hurts when the model is likely to be right. The effectiveness of self-critique is not a property of the method itself, but of the interaction between the method and the task's difficulty for the model. We also find that external rudeness---having users phrase prompts rudely---has no effect on either task, suggesting that the mechanism is not about ``trying harder'' but about genuinely reconsidering answers.
+
+We make the following contributions:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We conduct the first systematic study of how self-critique harshness affects LLM output quality, testing five harshness levels on two tasks with 50 samples per condition.
+    \item We demonstrate a task-dependent effect where harsh self-critique significantly improves performance on tasks with low initial accuracy (+24\% on \truthful) but significantly harms performance on tasks with high initial accuracy ($-$40 to $-$60\% on \gsm).
+    \item We show that external rudeness from users has no effect on model performance, distinguishing the mechanism of harsh self-critique from simple effort increase.
+    \item We provide practical guidance for practitioners: harsh self-critique should be employed only when the model's initial accuracy is expected to be low.
+\end{itemize}

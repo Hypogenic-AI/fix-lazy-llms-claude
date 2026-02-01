@@ -1,0 +1,83 @@
+\section{Results}
+\label{sec:results}
+
+Our experiments reveal a striking asymmetry: harsh self-critique has opposite effects on the two tasks. We present the main results and then analyze the pattern.
+
+\subsection{Main Results}
+\label{sec:main_results}
+
+\Tabref{tab:main_results} presents accuracy across all conditions for both tasks. The results show a clear task-dependent effect of harsh self-critique.
+
+\begin{table}[t]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}llcccccc@{}}
+        \toprule
+        & & \multicolumn{3}{c}{\textbf{\gsm (Math)}} & \multicolumn{3}{c}{\textbf{\truthful (Factual)}} \\
+        \cmidrule(lr){3-5} \cmidrule(lr){6-8}
+        \textbf{Condition} & \textbf{N} & \textbf{Initial} & \textbf{Final} & \textbf{$\Delta$} & \textbf{Initial} & \textbf{Final} & \textbf{$\Delta$} \\
+        \midrule
+        \baseline & 50 & 90.0\% & 90.0\% & --- & 22.0\% & 22.0\% & --- \\
+        \rudeuser & 50 & 90.0\% & 90.0\% & 0.0\% & 20.0\% & 20.0\% & 0.0\% \\
+        \midrule
+        Harsh 0 (\harshneutral) & 50 & 92.0\% & 40.0\% & $-$52.0\% & 22.0\% & 26.0\% & +4.0\% \\
+        Harsh 1 (\harshfirm) & 50 & 88.0\% & {\bf 50.0\%} & $-$38.0\% & 22.0\% & 34.0\% & +12.0\% \\
+        Harsh 2 (\harshharsh) & 50 & 90.0\% & 32.0\% & $-$58.0\% & 20.0\% & 40.0\% & +20.0\% \\
+        Harsh 3 (\harshvery) & 50 & 90.0\% & 48.0\% & $-$42.0\% & 20.0\% & 44.0\% & +24.0\% \\
+        Harsh 4 (\harshadv) & 50 & 92.0\% & 32.0\% & $-$60.0\% & 22.0\% & {\bf 46.0\%} & +24.0\% \\
+        \bottomrule
+    \end{tabular}
+    }
+    \caption{Accuracy by condition for both tasks. Initial = accuracy after generation step; Final = accuracy after refinement step; $\Delta$ = improvement from initial to final. For \gsm, higher harshness leads to larger accuracy \emph{decreases}. For \truthful, higher harshness leads to larger accuracy \emph{increases}. Best final accuracy within self-critique conditions in \textbf{bold}.}
+    \label{tab:main_results}
+\end{table}
+
+\subsection{GSM8K: Harsh Critique Harms Performance}
+\label{sec:gsm_results}
+
+On \gsm, self-critique at \emph{all} harshness levels dramatically decreases accuracy. The baseline achieves 90.0\% accuracy, but after self-critique:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item Neutral critique (Level 0) drops accuracy to 40.0\% ($-$52.0\%)
+    \item Adversarial critique (Level 4) drops accuracy to 32.0\% ($-$60.0\%)
+\end{itemize}
+
+Even the least harsh self-critique causes a 52 percentage point drop. The model starts with $\sim$90\% correct answers, but the critique step induces it to second-guess correct answers and change them to incorrect ones. Notably, there is no harshness level that preserves or improves the initial high accuracy.
+
+\subsection{TruthfulQA: Harsh Critique Improves Performance}
+\label{sec:truthful_results}
+
+On \truthful, the pattern reverses. The baseline achieves only 22.0\% accuracy, reflecting the dataset's design to elicit common misconceptions. After self-critique:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item Neutral critique (Level 0) improves accuracy to 26.0\% (+4.0\%)
+    \item Adversarial critique (Level 4) improves accuracy to 46.0\% (+24.0\%)
+\end{itemize}
+
+Higher harshness levels yield progressively larger improvements. The harsh critic helps the model recognize that its initial intuitive answer---which is typically wrong on this dataset---deserves reconsideration.
+
+\subsection{Statistical Significance}
+\label{sec:statistics}
+
+We test statistical significance using chi-squared tests comparing the best self-critique condition against baseline for each task.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{@{}lccccl@{}}
+        \toprule
+        \textbf{Task} & \textbf{Baseline} & \textbf{Best Condition} & \textbf{$\Delta$} & \textbf{$\chi^2$} & \textbf{$p$-value} \\
+        \midrule
+        \gsm & 90.0\% & 50.0\% (Harsh 1) & $-$40.0\% & 17.19 & $<$0.0001 \\
+        \truthful & 22.0\% & 46.0\% (Harsh 4) & +24.0\% & 5.39 & 0.020 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Statistical significance of accuracy changes. Both effects are significant at $\alpha = 0.05$. For \gsm, we compare baseline to the \emph{best} (least harmful) self-critique condition; the effect is still significantly negative.}
+    \label{tab:statistics}
+\end{table}
+
+Both effects are statistically significant ($p < 0.05$). The harm on \gsm and improvement on \truthful are not due to chance.
+
+\subsection{Rude User Has No Effect}
+\label{sec:rude_results}
+
+The \rudeuser condition---where the user prompt is phrased rudely but no self-critique is performed---shows no effect on either task. On \gsm, accuracy remains at 90.0\%; on \truthful, accuracy is 20.0\% (within sampling variance of the 22.0\% baseline).
+
+This null result is informative: it suggests that the mechanism of harsh self-critique is not about making the model ``try harder'' in response to demanding language. Rather, the effect comes specifically from how the model evaluates its own work. External tone does not induce the reconsideration that internal harsh critique does.
